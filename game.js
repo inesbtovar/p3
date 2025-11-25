@@ -2,13 +2,13 @@
 
 /* --- Data (pistas) --- */
 const CLUES = {
-  coat:      {title: "Casaco do marido", text: "O casaco não mostra sinais de arrombamento nem luta. (relevante)", kind: "real"},
-  chair:     {title: "Poltrona", text: "Fibras manchadas sugerem contacto com sangue. (relevante)", kind: "real"},
-  whisky:    {title: "Copo de whisky", text: "O copo parece ter sido limpo; impressões removidas. (secundária)", kind: "false"},
-  fridge:    {title: "Frigorífico", text: "Frigorífico aberto recentemente; restos de carne. (relevante)", kind: "real"},
-  leg:       {title: "Perna de borrego", text: "A perna de borrego tem uma chave presa — encontraste a chave.", kind: "real", givesKey: true},
-  bench:     {title: "Bancada", text: "Bancada molhada; uma faca está em falta. (relevante)", kind: "real"},
-  newspaper: {title: "Jornal", text: "Encontras a confissão: a Esposa matou Patrick Maloney. Fim do caso.", kind: "real", final: true}
+  coat:      {title: "Coat", text: "You found a clue in the coat!", kind: "real"},
+  chair:     {title: "Sofa", text: "You found a clue in the sofa!", kind: "real"},
+  whisky:    {title: "Whisky cup", text: "You found a clue in the whisky!", kind: "false"},
+  fridge:    {title: "Frige", text: "You found a clue in the frige!", kind: "real"},
+  leg:       {title: "Lamb", text: "You found a clue in the lamb! And the room key!", kind: "real", givesKey: true},
+  bench:     {title: "Table", text: "You found a clue in the table!", kind: "real"},
+  newspaper: {title: "Paper", text: "You found a the police Paper: Read it to find who's guilty!", kind: "real", final: true}
 };
 
 /* --- State --- */
@@ -67,7 +67,7 @@ function canGoTo(target){
 
 function goTo(idx, instant=false){
   if(!canGoTo(idx)){
-    flash("Não podes ir para aí ainda.");
+    flash("You can't go there yet");
     return;
   }
   state.index = idx;
@@ -120,13 +120,13 @@ function inspect(id){
   // gives key?
   if(CLUES[id].givesKey){
     state.hasKey = true;
-    keyState.textContent = "Sim";
-    flash("Recolheste a chave!");
+    keyState.textContent = "Yes";
+    flash("You got the room key!");
   }
   // final?
   if(CLUES[id].final){
     state.foundPaper = true;
-    paperState.textContent = "Sim";
+    paperState.textContent = "Yes";
   }
 
   renderUI();
@@ -138,10 +138,10 @@ function renderUI(){
   // clues
   clueList.innerHTML = "";
   if(state.clues.length === 0){
-    const e = document.createElement('div'); e.className = 'clue empty'; e.textContent = 'Nenhuma pista recolhida'; clueList.appendChild(e);
+    const e = document.createElement('div'); e.className = 'clue empty'; e.textContent = 'Got no clue'; clueList.appendChild(e);
   } else {
     state.clues.forEach(id=>{
-      const d = document.createElement('div'); d.className = 'clue'; d.textContent = CLUES[id].title + (CLUES[id].kind === 'real' ? ' — relevante' : ' — secundária');
+      const d = document.createElement('div'); d.className = 'clue'; d.textContent = CLUES[id].title + (CLUES[id].kind === 'real' ? ' — relevant' : ' — sec');
       clueList.appendChild(d);
     });
   }
@@ -151,12 +151,12 @@ function renderUI(){
   const door = document.getElementById('doorToQuarto');
   if(door){
     if(state.hasKey){
-      door.textContent = "Porta para o Quarto (destrancada)";
+      door.textContent = "Room door (unlocked)";
       door.removeAttribute('aria-disabled');
       door.disabled = false;
       door.classList.remove('locked');
     } else {
-      door.textContent = "Porta para o Quarto (trancada)";
+      door.textContent = "Room door (locked)";
       door.setAttribute('aria-disabled','true');
       door.disabled = true;
       door.classList.add('locked');
@@ -164,13 +164,13 @@ function renderUI(){
   }
   // text indicators
   currentLocation.textContent = sceneName(state.index);
-  keyState.textContent = state.hasKey ? "Sim" : "Não";
-  paperState.textContent = state.foundPaper ? "Sim" : "Não";
+  keyState.textContent = state.hasKey ? "Yes" : "No";
+  paperState.textContent = state.foundPaper ? "Yes" : "No";
 }
 
 /* --- Scene name --- */
 function sceneName(idx){
-  return ["Exterior","Hall","Sala","Cozinha","Quarto"][idx] || "";
+  return ["Exterior","Hall","Living room","Kitchen","Room"][idx] || "";
 }
 
 /* --- Modal control --- */
@@ -200,18 +200,18 @@ function attachUI(){
   // submit
   submitBtn.addEventListener('click', () => {
     if(!state.suspect){
-      showModal("Escolhe um suspeito", "Selecciona primeiro um dos suspeitos antes de submeter.");
+      showModal("Chose a suspect", "Chose a suspect before submiting.");
       return;
     }
     if(!state.foundPaper){
-      showModal("Ainda não", "Encontra o jornal no Quarto antes de submeter a acusação final.");
+      showModal("Not yet", "You need a real clue before submiting the accusation.");
       return;
     }
-    const correct = state.suspect === 'Esposa';
+    const correct = state.suspect === 'Wife';
     if(correct){
-      showModal("Acusação correcta", "A Esposa matou Patrick Maloney com a perna de borrego. Encontraste o jornal com a confissão.");
+      showModal("Correct accusation", "The Wife killed Patrick Maloney with the lamb. You found the confession.");
     } else {
-      showModal("Acusação errada", "A tua acusação está incorreta. Lê o jornal novamente para confirmar.");
+      showModal("Incorrect accusation", "Keep trying");
     }
   });
 

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Who Killed Patrick Maloney? — Prototype</title>
+  <title>Who Killed Patrick Maloney?</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -14,7 +14,7 @@
       <div class="logo">WM</div>
       <div class="heading">
         <h1>Who Killed Patrick Maloney?</h1>
-        <p class="sub">Investiga a casa, recolhe pistas e descobre o culpado.</p>
+        <p class="sub">Investigate the house, get clues e find who's guilty.</p>
       </div>
     </header>
 
@@ -26,17 +26,17 @@
           <div class="scene" data-index="0" id="scene-0">
             <div class="scene-canvas">
               <div class="scene-title">Exterior</div>
-              <button class="hotspot btn-large" data-action="enter" data-target="1" id="enterHouse">Entrar na casa</button>
+              <button class="hotspot btn-large" data-action="enter" data-target="1" id="enterHouse">Go inside</button>
             </div>
           </div>
 
           <!-- Hall (1) -->
           <div class="scene" data-index="1" id="scene-1">
             <div class="scene-canvas">
-              <div class="scene-title">Hall de Entrada</div>
+              <div class="scene-title">Hall</div>
               <div class="hotspot-row">
-                <button class="hotspot" data-action="goto" data-target="2">Ir para a Sala</button>
-                <button class="hotspot" data-action="inspect" data-id="coat">Inspecionar Casaco</button>
+                <button class="hotspot" data-action="goto" data-target="2">Go into living room</button>
+                <button class="hotspot" data-action="inspect" data-id="coat">Coat</button>
               </div>
             </div>
           </div>
@@ -44,14 +44,14 @@
           <!-- Sala (2) -->
           <div class="scene" data-index="2" id="scene-2">
             <div class="scene-canvas">
-              <div class="scene-title">Sala</div>
+              <div class="scene-title">Living Room</div>
               <div class="hotspot-row">
-                <button class="hotspot" data-action="goto" data-target="3">Ir para a Cozinha</button>
-                <button class="hotspot" id="doorToQuarto" data-action="goto" data-target="4" aria-disabled="true">Porta para o Quarto (trancada)</button>
+                <button class="hotspot" data-action="goto" data-target="3">Go into the kitchen</button>
+                <button class="hotspot" id="doorToQuarto" data-action="goto" data-target="4" aria-disabled="true">Room door</button>
               </div>
               <div class="object-row">
-                <button class="hotspot" data-action="inspect" data-id="chair">Poltrona</button>
-                <button class="hotspot" data-action="inspect" data-id="whisky">Copo de whisky</button>
+                <button class="hotspot" data-action="inspect" data-id="chair">Sofa</button>
+                <button class="hotspot" data-action="inspect" data-id="whisky">Whisky cup</button>
               </div>
             </div>
           </div>
@@ -59,12 +59,12 @@
           <!-- Cozinha (3) -->
           <div class="scene" data-index="3" id="scene-3">
             <div class="scene-canvas">
-              <div class="scene-title">Cozinha</div>
+              <div class="scene-title">Kitchen</div>
               <div class="hotspot-row">
-                <button class="hotspot" data-action="inspect" data-id="fridge">Frigorífico</button>
-                <button class="hotspot btn-key" data-action="inspect" data-id="leg" id="legHotspot">Perna de borrego (chave)</button>
-                <button class="hotspot" data-action="inspect" data-id="bench">Bancada</button>
-                <button class="hotspot" data-action="goto" data-target="2">Voltar à Sala</button>
+                <button class="hotspot" data-action="inspect" data-id="fridge">Frige</button>
+                <button class="hotspot btn-key" data-action="inspect" data-id="leg" id="legHotspot">Lamb</button>
+                <button class="hotspot" data-action="inspect" data-id="bench">Table</button>
+                <button class="hotspot" data-action="goto" data-target="2">Go back to the living room</button>
               </div>
             </div>
           </div>
@@ -72,11 +72,11 @@
           <!-- Quarto (4) -->
           <div class="scene" data-index="4" id="scene-4">
             <div class="scene-canvas">
-              <div class="scene-title">Quarto</div>
+              <div class="scene-title">Room</div>
               <div class="hotspot-row">
-                <button class="hotspot" data-action="inspect" data-id="bed">Cama</button>
-                <button class="hotspot btn-newspaper" data-action="inspect" data-id="newspaper" id="newspaper">Mesa de cabeceira (Jornal)</button>
-                <button class="hotspot" data-action="goto" data-target="2">Voltar à Sala</button>
+                <button class="hotspot" data-action="inspect" data-id="bed">Bed</button>
+                <button class="hotspot btn-newspaper" data-action="inspect" data-id="newspaper" id="newspaper">Bedside table</button>
+                <button class="hotspot" data-action="goto" data-target="2">Go back to the living room</button>
               </div>
             </div>
           </div>
@@ -86,60 +86,58 @@
       <!-- SIDEBAR -->
       <aside class="sidebar" aria-label="Controles e inventário">
         <div class="panel">
-          <h2 class="panel-title">Fluxo</h2>
-          <p class="muted">Exterior → Hall → Sala → Cozinha ⇄ Quarto (trancado até obter a chave).</p>
-          <div class="nav-buttons">
+            <div class="nav-buttons">
             <button class="nav-btn" data-index="0">Exterior</button>
             <button class="nav-btn" data-index="1">Hall</button>
-            <button class="nav-btn" data-index="2">Sala</button>
-            <button class="nav-btn" data-index="3">Cozinha</button>
-            <button class="nav-btn" data-index="4">Quarto</button>
+            <button class="nav-btn" data-index="2">Living Room</button>
+            <button class="nav-btn" data-index="3">Kitchen</button>
+            <button class="nav-btn" data-index="4">Room</button>
           </div>
         </div>
 
         <div class="panel">
-          <h2 class="panel-title">Pistas</h2>
+          <h2 class="panel-title">Clues</h2>
           <div id="clueList" class="clue-list">
-            <div class="clue empty">Nenhuma pista recolhida</div>
+            <div class="clue empty">No clues yet</div>
           </div>
         </div>
 
         <div class="panel">
-          <h2 class="panel-title">Suspeitos</h2>
+          <h2 class="panel-title">Suspects</h2>
           <div class="suspects" id="suspects">
-            <button class="suspect" data-name="Vizinha">Vizinha</button>
-            <button class="suspect" data-name="Jardineiro">Jardineiro</button>
-            <button class="suspect" data-name="Esposa">Esposa</button>
+            <button class="suspect" data-name="Vizinha">Neighbor</button>
+            <button class="suspect" data-name="Jardineiro">Gardener</button>
+            <button class="suspect" data-name="Esposa">Wife</button>
           </div>
 
           <div class="actions">
-            <button class="btn primary" id="submitBtn">Submeter</button>
-            <button class="btn ghost" id="resetBtn">Reiniciar</button>
+            <button class="btn primary" id="submitBtn">Submit</button>
+            <button class="btn ghost" id="resetBtn">Retry</button>
           </div>
         </div>
 
         <div class="panel small">
-          <p class="muted">Estado:</p>
-          <p>Local atual: <strong id="currentLocation">Exterior</strong></p>
-          <p>Chave: <strong id="keyState">Não</strong></p>
-          <p>Jornal: <strong id="paperState">Não</strong></p>
+          <p class="muted">State:</p>
+          <p>Place right now: <strong id="currentLocation">Exterior</strong></p>
+          <p>Key: <strong id="keyState">No</strong></p>
+          <p>Paper: <strong id="paperState">No</strong></p>
         </div>
       </aside>
     </section>
 
     <!-- FOOTER / credits -->
     <footer class="app-footer">
-      <small class="muted">Protótipo — baseado no documento de planeamento</small>
+      <small class="muted">Website created by Inês Tovar</small>
     </footer>
   </main>
 
   <!-- MODAL FIXO -->
   <div id="overlay" class="overlay" aria-hidden="true">
     <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
-      <h3 id="modalTitle">Pista</h3>
-      <div id="modalBody" class="modal-body">Texto...</div>
+      <h3 id="modalTitle">Clues</h3>
+      <div id="modalBody" class="modal-body">Text...</div>
       <div class="modal-actions">
-        <button class="btn ghost" id="modalClose">Fechar</button>
+        <button class="btn ghost" id="modalClose">Close</button>
       </div>
     </div>
   </div>

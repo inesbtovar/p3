@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="pt-PT">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Who Killed Patrick Maloney? — Prototype</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="app" role="application" aria-label="Who Killed Patrick Maloney prototype">
+
+    <!-- HEADER -->
+    <header class="app-header">
+      <div class="logo">WM</div>
+      <div class="heading">
+        <h1>Who Killed Patrick Maloney?</h1>
+        <p class="sub">Investiga a casa, recolhe pistas e descobre o culpado.</p>
+      </div>
+    </header>
+
+    <section class="content">
+      <!-- STAGE -->
+      <div class="stage" id="stage" aria-live="polite">
+        <div class="carousel" id="carousel">
+          <!-- Exterior (0) -->
+          <div class="scene" data-index="0" id="scene-0">
+            <div class="scene-canvas">
+              <div class="scene-title">Exterior</div>
+              <button class="hotspot btn-large" data-action="enter" data-target="1" id="enterHouse">Entrar na casa</button>
+            </div>
+          </div>
+
+          <!-- Hall (1) -->
+          <div class="scene" data-index="1" id="scene-1">
+            <div class="scene-canvas">
+              <div class="scene-title">Hall de Entrada</div>
+              <div class="hotspot-row">
+                <button class="hotspot" data-action="goto" data-target="2">Ir para a Sala</button>
+                <button class="hotspot" data-action="inspect" data-id="coat">Inspecionar Casaco</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Sala (2) -->
+          <div class="scene" data-index="2" id="scene-2">
+            <div class="scene-canvas">
+              <div class="scene-title">Sala</div>
+              <div class="hotspot-row">
+                <button class="hotspot" data-action="goto" data-target="3">Ir para a Cozinha</button>
+                <button class="hotspot" id="doorToQuarto" data-action="goto" data-target="4" aria-disabled="true">Porta para o Quarto (trancada)</button>
+              </div>
+              <div class="object-row">
+                <button class="hotspot" data-action="inspect" data-id="chair">Poltrona</button>
+                <button class="hotspot" data-action="inspect" data-id="whisky">Copo de whisky</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Cozinha (3) -->
+          <div class="scene" data-index="3" id="scene-3">
+            <div class="scene-canvas">
+              <div class="scene-title">Cozinha</div>
+              <div class="hotspot-row">
+                <button class="hotspot" data-action="inspect" data-id="fridge">Frigorífico</button>
+                <button class="hotspot btn-key" data-action="inspect" data-id="leg" id="legHotspot">Perna de borrego (chave)</button>
+                <button class="hotspot" data-action="inspect" data-id="bench">Bancada</button>
+                <button class="hotspot" data-action="goto" data-target="2">Voltar à Sala</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quarto (4) -->
+          <div class="scene" data-index="4" id="scene-4">
+            <div class="scene-canvas">
+              <div class="scene-title">Quarto</div>
+              <div class="hotspot-row">
+                <button class="hotspot" data-action="inspect" data-id="bed">Cama</button>
+                <button class="hotspot btn-newspaper" data-action="inspect" data-id="newspaper" id="newspaper">Mesa de cabeceira (Jornal)</button>
+                <button class="hotspot" data-action="goto" data-target="2">Voltar à Sala</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SIDEBAR -->
+      <aside class="sidebar" aria-label="Controles e inventário">
+        <div class="panel">
+          <h2 class="panel-title">Fluxo</h2>
+          <p class="muted">Exterior → Hall → Sala → Cozinha ⇄ Quarto (trancado até obter a chave).</p>
+          <div class="nav-buttons">
+            <button class="nav-btn" data-index="0">Exterior</button>
+            <button class="nav-btn" data-index="1">Hall</button>
+            <button class="nav-btn" data-index="2">Sala</button>
+            <button class="nav-btn" data-index="3">Cozinha</button>
+            <button class="nav-btn" data-index="4">Quarto</button>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h2 class="panel-title">Pistas</h2>
+          <div id="clueList" class="clue-list">
+            <div class="clue empty">Nenhuma pista recolhida</div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h2 class="panel-title">Suspeitos</h2>
+          <div class="suspects" id="suspects">
+            <button class="suspect" data-name="Vizinha">Vizinha</button>
+            <button class="suspect" data-name="Jardineiro">Jardineiro</button>
+            <button class="suspect" data-name="Esposa">Esposa</button>
+          </div>
+
+          <div class="actions">
+            <button class="btn primary" id="submitBtn">Submeter</button>
+            <button class="btn ghost" id="resetBtn">Reiniciar</button>
+          </div>
+        </div>
+
+        <div class="panel small">
+          <p class="muted">Estado:</p>
+          <p>Local atual: <strong id="currentLocation">Exterior</strong></p>
+          <p>Chave: <strong id="keyState">Não</strong></p>
+          <p>Jornal: <strong id="paperState">Não</strong></p>
+        </div>
+      </aside>
+    </section>
+
+    <!-- FOOTER / credits -->
+    <footer class="app-footer">
+      <small class="muted">Protótipo — baseado no documento de planeamento</small>
+    </footer>
+  </main>
+
+  <!-- MODAL FIXO -->
+  <div id="overlay" class="overlay" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <h3 id="modalTitle">Pista</h3>
+      <div id="modalBody" class="modal-body">Texto...</div>
+      <div class="modal-actions">
+        <button class="btn ghost" id="modalClose">Fechar</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="game.js"></script>
+</body>
+</html>

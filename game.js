@@ -1,20 +1,18 @@
-/* ===== Prototype game logic (Estilo 2) ===== */
-
-/* --- Data (pistas) --- */
 const CLUES = {
-  coat:      {title: "Coat", text: "You found a clue in the coat!", kind: "real"},
-  chair:     {title: "Sofa", text: "You found a clue in the sofa!", kind: "real"},
-  whisky:    {title: "Whisky cup", text: "You found a clue in the whisky!", kind: "false"},
-  fridge:    {title: "Frige", text: "You found a clue in the frige!", kind: "real"},
+  coat:      {title: "Shoes", text: "You found a clue in the shoes!", kind: "real"},
+  chair:     {title: "Chair", text: "You found a clue in the sofa!", kind: "real"},
+  table:     {title: "Table", text: "You found a clue in the table!", kind: "false"},
+  fridge:    {title: "Fridge", text: "You found a clue in the fridge!", kind: "real"},
   leg:       {title: "Lamb", text: "You found a clue in the lamb! And the room key!", kind: "real", givesKey: true},
   bench:     {title: "Table", text: "You found a clue in the table!", kind: "real"},
-  newspaper: {title: "Paper", text: "You found a the police Paper: Read it to find who's guilty!", kind: "real", final: true}
+  bed:       {title: "Bed", text: "You found the newspaper under the bed!", kind: "real", givesNewspaper: true},
+  newspaper: {title: "Paper", text: "You found the police Paper: Read it to find who's guilty!", kind: "real", final: true}
 };
 
 /* --- State --- */
 let state = {
-  index: 0,        // scene index: 0..4
-  clues: [],       // ids encontrados
+  index: 0,
+  clues: [],
   hasKey: false,
   foundPaper: false,
   suspect: null
@@ -45,28 +43,54 @@ function init(){
 }
 init();
 
-/* --- Navigation rules (flow) --- */
 function canGoTo(target){
   const cur = state.index;
-  if(cur === target) return true;
-  // Exterior (0) -> Hall (1)
+
+  // Exterior -> Hall
   if(cur === 0 && target === 1) return true;
-  // Hall (1) -> Sala (2)
+
+  // Hall -> Living room
   if(cur === 1 && target === 2) return true;
-  // Sala (2) -> Cozinha (3) or Quarto (4) (Quarto locked without key)
-  if(cur === 2 && (target === 3 || target === 4)){
-    if(target === 4 && !state.hasKey) return false;
-    return true;
+
+  // Living room -> Kitchen ou Room
+  if(cur === 2){
+    if(target === 3) return true; // Kitchen
+    if(target === 4){             // Room
+      if(!state.hasKey){
+        showModal("Locked door", "This door is locked. Find the key first!");
+        return false;
+      }
+      return true;
+    }
   }
-  // Cozinha (3) -> Sala (2)
+
+  // Kitchen -> Living room
   if(cur === 3 && target === 2) return true;
-  // Quarto (4) -> Sala (2)
-  if(cur === 4 && target === 2) return true;
+
+  // Room -> Living room or Newspaper
+  if(cur === 4){
+    if(target === 2) return true;
+    if(target === 5){
+      if(!state.foundPaper){
+        showModal("Nothing here", "You need to find the newspaper first!");
+        return false;
+      }
+      return true;
+    }
+  }
+
+  // Newspaper navigation (5-9)
+  if(cur === 5 && target === 6) return true;
+  if(cur === 6 && target === 7) return true;
+  if(cur === 7 && target === 8) return true;
+  if(cur === 8 && target === 9) return true;
+  if(cur === 9 && target === 2) return true;
+
   return false;
 }
 
 function goTo(idx, instant=false){
-  if(!canGoTo(idx)){
+  if(!instant && !canGoTo(idx)){
     flash("You can't go there yet");
     return;
   }
@@ -101,7 +125,10 @@ function attachHotspots(){
     });
     // keyboard support
     el.addEventListener('keydown', e=> {
-      if(e.key === 'Enter' || e.key === ' ') { e.preventDefault(); el.click(); }
+      if(e.key === 'Enter' || e.key === ' ') { 
+        e.preventDefault(); 
+        el.click(); 
+      }
     });
   });
 }
@@ -109,20 +136,41 @@ function attachHotspots(){
 /* --- Inspect objects / collect clues --- */
 function inspect(id){
   if(!id || !CLUES[id]) return;
+  
   // already found?
   if(state.clues.includes(id)){
+    // Se for a cama e já tiver o jornal, ir para o jornal
+    if(id === 'bed' && state.foundPaper){
+      goTo(5);
+      return;
+    }
     showModal(CLUES[id].title, CLUES[id].text);
     return;
   }
 
   // collect
   state.clues.push(id);
+  
   // gives key?
   if(CLUES[id].givesKey){
     state.hasKey = true;
     keyState.textContent = "Yes";
     flash("You got the room key!");
   }
+  
+  // gives newspaper?
+  if(CLUES[id].givesNewspaper){
+    state.foundPaper = true;
+    paperState.textContent = "Yes";
+    flash("You found the newspaper!");
+    renderUI();
+    // Ir para o jornal após um pequeno delay
+    setTimeout(() => {
+      goTo(5);
+    }, 800);
+    return; // Não mostrar o modal normal
+  }
+  
   // final?
   if(CLUES[id].final){
     state.foundPaper = true;
@@ -138,30 +186,32 @@ function renderUI(){
   // clues
   clueList.innerHTML = "";
   if(state.clues.length === 0){
-    const e = document.createElement('div'); e.className = 'clue empty'; e.textContent = 'Got no clue'; clueList.appendChild(e);
+    const e = document.createElement('div'); 
+    e.className = 'clue empty'; 
+    e.textContent = 'Got no clue'; 
+    clueList.appendChild(e);
   } else {
     state.clues.forEach(id=>{
-      const d = document.createElement('div'); d.className = 'clue'; d.textContent = CLUES[id].title + (CLUES[id].kind === 'real' ? ' — relevant' : ' — sec');
+      const d = document.createElement('div'); 
+      d.className = 'clue'; 
+      d.textContent = CLUES[id].title + (CLUES[id].kind === 'real' ? ' — relevant' : ' — sec');
       clueList.appendChild(d);
     });
   }
+  
   // nav active
   navBtns.forEach(b => b.classList.toggle('active', Number(b.dataset.index) === state.index));
+  
   // button door label update
   const door = document.getElementById('doorToQuarto');
   if(door){
     if(state.hasKey){
-      door.textContent = "Room door (unlocked)";
-      door.removeAttribute('aria-disabled');
-      door.disabled = false;
       door.classList.remove('locked');
     } else {
-      door.textContent = "Room door (locked)";
-      door.setAttribute('aria-disabled','true');
-      door.disabled = true;
       door.classList.add('locked');
     }
   }
+  
   // text indicators
   currentLocation.textContent = sceneName(state.index);
   keyState.textContent = state.hasKey ? "Yes" : "No";
@@ -170,7 +220,7 @@ function renderUI(){
 
 /* --- Scene name --- */
 function sceneName(idx){
-  return ["Exterior","Hall","Living room","Kitchen","Room"][idx] || "";
+  return ["Exterior","Hall","Living room","Kitchen","Room", "Newspaper Page 1", "Newspaper Page 2", "Newspaper Page 3", "Newspaper Page 4", "Newspaper Page 5"][idx] || "";
 }
 
 /* --- Modal control --- */
@@ -181,10 +231,19 @@ function showModal(title, text){
   overlay.setAttribute('aria-hidden','false');
   modalClose.focus();
 }
+
 modalClose.addEventListener('click', closeModal);
-overlay.addEventListener('click', e => { if(e.target === overlay) closeModal(); });
-document.addEventListener('keydown', e => { if(e.key === 'Escape' && overlay.classList.contains('show')) closeModal(); });
-function closeModal(){ overlay.classList.remove('show'); overlay.setAttribute('aria-hidden','true'); }
+overlay.addEventListener('click', e => { 
+  if(e.target === overlay) closeModal(); 
+});
+document.addEventListener('keydown', e => { 
+  if(e.key === 'Escape' && overlay.classList.contains('show')) closeModal(); 
+});
+
+function closeModal(){ 
+  overlay.classList.remove('show'); 
+  overlay.setAttribute('aria-hidden','true');
+}
 
 /* --- UI attachments (suspects, submit, reset) --- */
 function attachUI(){
@@ -200,18 +259,18 @@ function attachUI(){
   // submit
   submitBtn.addEventListener('click', () => {
     if(!state.suspect){
-      showModal("Chose a suspect", "Chose a suspect before submiting.");
+      showModal("Choose a suspect", "Choose a suspect before submitting.");
       return;
     }
     if(!state.foundPaper){
-      showModal("Not yet", "You need a real clue before submiting the accusation.");
+      showModal("Not yet", "You need to find the newspaper before submitting the accusation.");
       return;
     }
-    const correct = state.suspect === 'Wife';
+    const correct = state.suspect === 'Esposa';
     if(correct){
-      showModal("Correct accusation", "The Wife killed Patrick Maloney with the lamb. You found the confession.");
+      showModal("Correct accusation!", "The Wife killed Patrick Maloney with the lamb. You found the confession.");
     } else {
-      showModal("Incorrect accusation", "Keep trying");
+      showModal("Incorrect accusation", "Keep trying! Review the evidence.");
     }
   });
 
@@ -232,8 +291,9 @@ function flash(text){
     border: '1px solid rgba(255,255,255,0.04)',
     color: '#eaf4ff',
     borderRadius: '8px',
-    zIndex: 9999,
-    boxShadow: '0 8px 30px rgba(0,0,0,0.7)'
+    zIndex: '9999',
+    boxShadow: '0 8px 30px rgba(0,0,0,0.7)',
+    transition: 'opacity 0.7s'
   });
   document.body.appendChild(el);
   setTimeout(()=> el.style.opacity = '0', 1500);
@@ -241,11 +301,19 @@ function flash(text){
 }
 
 /* --- helpers --- */
-function updateSceneUI(){ renderUI(); }
+function updateSceneUI(){ 
+  renderUI(); 
+}
 
 /* --- Reset game --- */
 function resetGame(){
-  state = { index: 0, clues: [], hasKey: false, foundPaper: false, suspect: null };
+  state = { 
+    index: 0, 
+    clues: [], 
+    hasKey: false, 
+    foundPaper: false, 
+    suspect: null 
+  };
   document.querySelectorAll('.suspect').forEach(s => s.classList.remove('active'));
   renderUI();
   goTo(0, true);

@@ -11,7 +11,7 @@
 
     <!-- HEADER -->
     <header class="app-header">
-      <div class="logo">WM</div>
+      <div class="logo">WKPM?</div>
       <div class="heading">
         <h1>Who Killed Patrick Maloney?</h1>
         <p class="sub">Investigate the house, get clues e find who's guilty.</p>
@@ -25,18 +25,17 @@
           <!-- Exterior (0) -->
           <div class="scene" data-index="0" id="scene-0">
             <div class="scene-canvas">
-              <div class="scene-title">Exterior</div>
-              <button class="hotspot btn-large" data-action="enter" data-target="1" id="enterHouse">Go inside</button>
+              <button class="hotspot hotspot-free" data-action="enter" data-target="1" id="enterHouse"></button>
             </div>
           </div>
 
           <!-- Hall (1) -->
           <div class="scene" data-index="1" id="scene-1">
             <div class="scene-canvas">
-              <div class="scene-title">Hall</div>
+              <div class="scene-title"></div>
               <div class="hotspot-row">
-                <button class="hotspot" data-action="goto" data-target="2">Go into living room</button>
-                <button class="hotspot" data-action="inspect" data-id="coat">Coat</button>
+                <button class="hotspot hotspot-free" data-action="goto" data-target="2" id="enterLivingRoom"></button>
+                <button class="hotspot hotspot-free" data-action="inspect" data-id="coat" id="shoes"></button>
               </div>
             </div>
           </div>
@@ -44,14 +43,13 @@
           <!-- Sala (2) -->
           <div class="scene" data-index="2" id="scene-2">
             <div class="scene-canvas">
-              <div class="scene-title">Living Room</div>
               <div class="hotspot-row">
-                <button class="hotspot" data-action="goto" data-target="3">Go into the kitchen</button>
-                <button class="hotspot" id="doorToQuarto" data-action="goto" data-target="4" aria-disabled="true">Room door</button>
+                <button class="hotspot hotspot-free" data-action="goto" data-target="3" id="enterKitchen"></button>
+                <button class="hotspot hotspot-free" id="doorToQuarto" data-action="goto" data-target="4"></button>
               </div>
               <div class="object-row">
-                <button class="hotspot" data-action="inspect" data-id="chair">Sofa</button>
-                <button class="hotspot" data-action="inspect" data-id="whisky">Whisky cup</button>
+                <button class="hotspot hotspot-free" data-action="inspect" data-id="chair"  id="chair"></button>
+                <button class="hotspot hotspot-free" data-action="inspect" data-id="table" id="tableL"></button>
               </div>
             </div>
           </div>
@@ -59,12 +57,11 @@
           <!-- Cozinha (3) -->
           <div class="scene" data-index="3" id="scene-3">
             <div class="scene-canvas">
-              <div class="scene-title">Kitchen</div>
               <div class="hotspot-row">
-                <button class="hotspot" data-action="inspect" data-id="fridge">Frige</button>
+                <button class="hotspot hotspot-free" data-action="inspect" data-id="fridge">Frige</button>
                 <button class="hotspot btn-key" data-action="inspect" data-id="leg" id="legHotspot">Lamb</button>
-                <button class="hotspot" data-action="inspect" data-id="bench">Table</button>
-                <button class="hotspot" data-action="goto" data-target="2">Go back to the living room</button>
+                <button class="hotspot hotspot-free" data-action="inspect" data-id="bench">Table</button>
+                <button class="hotspot hotspot-free" data-action="goto" data-target="2">Go back to the living room</button>
               </div>
             </div>
           </div>
@@ -72,14 +69,58 @@
           <!-- Quarto (4) -->
           <div class="scene" data-index="4" id="scene-4">
             <div class="scene-canvas">
-              <div class="scene-title">Room</div>
               <div class="hotspot-row">
-                <button class="hotspot" data-action="inspect" data-id="bed">Bed</button>
-                <button class="hotspot btn-newspaper" data-action="inspect" data-id="newspaper" id="newspaper">Bedside table</button>
-                <button class="hotspot" data-action="goto" data-target="2">Go back to the living room</button>
+                <button class="hotspot hotspot-free" data-action="inspect" data-id="bed">Bed</button>
+                <button class="hotspot hotspot-free" data-action="goto" data-target="2">Go back to the living room</button>
               </div>
             </div>
           </div>
+
+          <!-- Jornal (5) -->
+          <div class="scene" data-index="5" id="scene-5">
+            <div class="scene-canvas">
+              <div class="hotspot-row">
+                <button class="hotspot hotspot-free" data-action="goto" data-target="6">Next</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Jornal (6) -->
+          <div class="scene" data-index="6" id="scene-6">
+            <div class="scene-canvas">
+              <div class="hotspot-row">
+                <button class="hotspot hotspot-free" data-action="goto" data-target="7">Next</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Jornal (7) -->
+          <div class="scene" data-index="7" id="scene-7">
+            <div class="scene-canvas">
+              <div class="hotspot-row">
+                <button class="hotspot hotspot-free" data-action="goto" data-target="8">Next</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Jornal (8) -->
+          <div class="scene" data-index="8" id="scene-8">
+            <div class="scene-canvas">
+              <div class="hotspot-row">
+                <button class="hotspot hotspot-free" data-action="goto" data-target="9">Next</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Jornal (9) -->
+          <div class="scene" data-index="9" id="scene-9">
+            <div class="scene-canvas">
+              <div class="hotspot-row">
+                <button class="hotspot hotspot-free" data-action="goto" data-target="2">Back to living room</button>
+              </div>
+            </div>
+          </div>
+
         </div>
       </div>
 
